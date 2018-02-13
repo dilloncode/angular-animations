@@ -1,4 +1,4 @@
-import { Component, trigger, state, style, transition, animate } from '@angular/core';
+import { Component, trigger, state, style, transition, animate, keyframes } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -35,10 +35,13 @@ import { Component, trigger, state, style, transition, animate } from '@angular/
       state('fadeIn', style({
         opacity: '1'
       })),
-      //transition('* => *', animate('500ms ease-in'))
+
       transition('void => *', [
-        style({ opacity: '0', transform: 'translateY(50px)' }),
-        animate('500ms 0s ease-out')
+        animate(500, keyframes([
+          style({opacity: 0, transform: 'translateY(-30px)', offset: 0}),
+          style({opacity: 1, transform: 'translateY(5px)', offset: .3}),
+          style({opacity: 1, transform: 'translateY(0)', offset: 1}),
+        ]))
       ])
     ])
   ]
