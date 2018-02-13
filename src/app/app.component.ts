@@ -4,8 +4,9 @@ import { Component, trigger, state, style, transition, animate, keyframes } from
   selector: 'app-root',
   template: `<button (click)="toggleState()">My Button</button>
   <ul>
-    <li *ngFor="let item of items" [@myTrigger]='state'>{{ item }}</li>
+    <li *ngFor="let item of items" [@myTrigger]='state' (@myTrigger.start)="animStart($event)" (@myTrigger.done)="animDone($event)">{{ item }}</li>
   </ul>
+  {{ animDetails }}
   `,
   styles: [`
   ul { 
@@ -37,7 +38,7 @@ import { Component, trigger, state, style, transition, animate, keyframes } from
       })),
 
       transition('void => *', [
-        animate(500, keyframes([
+        animate(2000, keyframes([
           style({opacity: 0, transform: 'translateY(-30px)', offset: 0}),
           style({opacity: 1, transform: 'translateY(5px)', offset: .3}),
           style({opacity: 1, transform: 'translateY(0)', offset: 1}),
@@ -48,12 +49,21 @@ import { Component, trigger, state, style, transition, animate, keyframes } from
 })
 export class AppComponent {
   state: string = 'fadeIn';
-  items = ['item1', 'item2', 'item3'];
+  items = new Array();
+  animDetails: string = 'Waiting'
 
   toggleState() {
     //this.state = this.state === 'small' ? 'large' : 'small';
 
     this.items.push('another item');
     this.state = "fadeIn";
+  }
+
+  animStart(event: any) {
+    console.log('Animation started', event);
+  }
+
+  animDone(event: any) {
+    this.animDetails = 'It took me ' + event.totalTime + 'ms to complete';
   }
 }
