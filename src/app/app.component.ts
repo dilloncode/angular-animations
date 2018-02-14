@@ -2,7 +2,7 @@ import { Component, trigger, state, style, transition, animate, keyframes } from
 
 @Component({
   selector: 'app-root',
-  template: `<button (click)="toggleState()">My Button</button>
+  template: `<button (click)="toggleState()" [@removeMe]='btnState'>My Button</button>
   <ul>
     <li *ngFor="let item of items" [@myTrigger]='state' (@myTrigger.start)="animStart($event)" (@myTrigger.done)="animDone($event)">{{ item }}</li>
   </ul>
@@ -39,24 +39,41 @@ import { Component, trigger, state, style, transition, animate, keyframes } from
 
       transition('void => *', [
         animate(2000, keyframes([
-          style({opacity: 0, transform: 'translateY(-30px)', offset: 0}),
-          style({opacity: 1, transform: 'translateY(5px)', offset: .3}),
-          style({opacity: 1, transform: 'translateY(0)', offset: 1}),
+          style({ opacity: 0, transform: 'translateY(-30px)', offset: 0 }),
+          style({ opacity: 1, transform: 'translateY(5px)', offset: .3 }),
+          style({ opacity: 1, transform: 'translateY(0)', offset: 1 }),
         ]))
       ])
+    ]),
+    trigger('removeMe', [
+      state('out', style({
+        transform: 'scale(0)',
+        opacity: 0
+      })),
+
+      transition('* => out', [
+        animate('500ms 0s ease-in', keyframes([
+          style({ opacity: 1, transform: 'translateX(-8px)', offset: 0 }),
+          style({ opacity: 1, transform: 'translateX(0)', offset: 0.3 }),
+          style({ opacity: 0, transform: 'translateX(50px)', offset: 1 })
+        ]))
+      ])
+
     ])
   ]
 })
 export class AppComponent {
   state: string = 'fadeIn';
   items = new Array();
-  animDetails: string = 'Waiting'
+  animDetails: string = 'Waiting';
+  btnState: string = 'in';
 
   toggleState() {
     //this.state = this.state === 'small' ? 'large' : 'small';
 
     this.items.push('another item');
     this.state = "fadeIn";
+    this.btnState = 'out';
   }
 
   animStart(event: any) {
